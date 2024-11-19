@@ -1,0 +1,24 @@
+linux:
+  children:
+    wed:
+      hosts:
+        site-1:
+          ansible_host: fhmht7k1au4i6qpng92g.auto.internal
+
+        site-2:
+          ansible_host: fv4crcldquktk4rh8fvc.auto.internal
+    monitoring:
+      hosts:
+        elasticsearch:
+          ansible_host: fhmjq5tecb1otitrverq.auto.internal
+        kibana:
+          ansible_host: fhmval6vni0o8oao4d4c.auto.internal
+        zabbix:
+          ansible_host: fhm7th38d0l6dulvsh02.auto.internal
+
+  vars:
+    ansible_user: shtuka
+    ansible_become: true
+    ansible_ssh_private_key_file: ~/.ssh/id_ed25519
+    elastic_pass: ""
+    el_fqdn: fhmjq5tecb1otitrverq.auto.internal

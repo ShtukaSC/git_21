@@ -1,0 +1,27 @@
+- name: Install nginx
+  hosts: all
+  roles:
+    - nginx
+  tags:
+    - instll_nginx
+
+- name: install_agents
+  hosts: all
+  roles:
+    - install_agents
+  tags:
+    - install_agents
+
+- name: Установка и настройка zabbix-server
+  hosts: monitoring
+  roles:
+    - role: zabbix-server
+  tags:
+    - zabbix_server
+
+- name: Установка ELK
+  hosts: monitoring
+  roles:
+    - ELK
+  tags:
+    - elk
