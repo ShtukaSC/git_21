@@ -15,27 +15,27 @@
 План:
 ![image](https://github.com/user-attachments/assets/11641673-9d71-4ca9-8e2f-b81bdf6275c7)
 
-**Создаем Bastion/Jump host**
+# Создаем Bastion/Jump host
 
 ![image](https://github.com/user-attachments/assets/54db0ada-888b-44a9-8f4a-99feb0ae28b4)
 
 
-**Настраиваем Bastion/Jump host**
+# Настраиваем Bastion/Jump host
 (ставим пакеты, terraform..)
 
-**Создаём сервисный аккаунт**
+# Создаём сервисный аккаунт
 
 ![image](https://github.com/user-attachments/assets/59147ba3-0acd-496a-8a6f-b674f04d65a1)
 
-Устанавливаем провайдера через зеркало
+**Устанавливаем провайдера через зеркало**
 
-Создаём ключ авторизации
+**Создаём ключ авторизации**
 
 Далее настраиваем провайдера (документация)
 
 Инициалзируем
 
-**Описание инфраструктуры**
+# Описание инфраструктуры
 
 1. providers.tf - настройка провайдера
 2. variables.tf - дефолтные значения
@@ -43,11 +43,13 @@
 4. output.tf - вывод
 5. main.tf - что будет делать терраформ
 
-Содержимое файлов находиться в коде
+**Содержимое файлов находиться в коде**
 
-**Устанавливаем Ansible, создаём каталог для сохранения файлов фнсибла и файлики:**
+# Устанавливаем Ansible, создаём каталог для сохранения файлов фнсибла и файлики:
 
+...
 mkdir ~/ansible && cd ~/ansible && touch inventory.yaml && touch playbook.yaml && touch ansible.cfg
+...
 
 **Создаём роли**
 
@@ -74,10 +76,10 @@ packages_to_install:
 
 ![image](https://github.com/user-attachments/assets/ea868c17-cd4f-41a9-9ad7-d94ca40acc09)
 
-**Настраиваем сети с помощью Terraform**
+# Настраиваем сети с помощью Terraform
 
-Изменяем main.tf
-
+**Изменяем main.tf**
+...
 #Новый ресурс. Создаем новый шлюз для закрытой сети
 resource "yandex_vpc_gateway" "private_net" {
   name = "private_net_nat"
@@ -113,16 +115,16 @@ resource "yandex_vpc_subnet" "subnet" {
   v4_cidr_blocks = each.value["v4_cidr_blocks"]
   route_table_id = yandex_vpc_route_table.route_with_nat.id ##Добавляем ее. Связываем подсеть и маршрутизацию, которую мы создали выше
 }
-
-**Бастион уже умеет ходить в 30 подсеть, так как имеет интерфейс из этой подсети. Чтобы он мог ходить и на 20, выполняем:**
-
+...
+# Бастион уже умеет ходить в 30 подсеть, так как имеет интерфейс из этой подсети. Чтобы он мог ходить и на 20, выполняем:
+...
 ip route add 192.168.20.0/24 via 192.168.30.1
+...
 
+# Snapshots
 
-**Snapshots**
-
-Добавляем в main.tf
-
+**Добавляем в main.tf**
+...
 resource "yandex_compute_snapshot" "disk-snap" {
   for_each = var.virtual_machines
   name     = each.value["disk_name"]
@@ -142,16 +144,15 @@ resource "yandex_compute_snapshot_schedule" "one_week_ttl_every_day" {
 
   disk_ids = ["${yandex_compute_disk.boot-disk[each.key].id}"] #Расписание применяется к ранее созданным дискам
 }
-
-**Ansible**
+...
+# Ansible
 
 Создадим новую роль:
 
 ansible-galaxy init install_agents
 
 install_agents/tasks/main.yml:
-
----
+...
 # tasks file for install_agents
 - name: Installing zabbix_agent2
   block:
@@ -182,7 +183,7 @@ install_agents/tasks/main.yml:
     name: zabbix-agent2
     state: restarted
     enabled: yes
-
+...
 install_agents/templates/zabbix_agent2.j2
 
 install_agents/vars/main.yml
