@@ -190,7 +190,51 @@ install_agents/vars/main.yml
 
 **Меняем инвентарник и плейбук**
 
+**Руками**
+
 Подключаемся по ssh к серверу zabbix 
+```
+ssh -i <key_path> <login>@<fqdn>
+sudo -i
+```
+Вводим команду mysql_secure_installation и отвечаем на вопросы, как указано ниже:
+ ```
+Enter current password for root (enter for none): Press Enter
+Switch to unix_socket authentication [Y/n] y
+Change the root password? [Y/n] y
+New password: <Enter root DB password, I will set "rootDBpass">
+Re-enter new password: <Repeat root DB password, I will set "rootDBpass">
+Remove anonymous users? [Y/n]: Y
+Disallow root login remotely? [Y/n]: Y
+Remove test database and access to it? [Y/n]:  Y
+Reload privilege tables now? [Y/n]:  Y
+```
+```
+mysql -p'<пароль>' -e "create database zabbix character set utf8mb4 collate utf8mb4_bin;"
+mysql -p'<пароль>' -e "create user 'zabbix'@'localhost' identified by '<новый пароль для БД забикса>';"
+mysql -p'<пароль>' -e "grant all privileges on zabbix.* to zabbix@localhost identified by '<пароль для БД забикса>';"
+zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p'<пароль для БД забикса>' zabbix
+```
+Открываем конфиг сервера и меняем строку
+
+```
+nano /etc/zabbix/zabbix_server.conf
+
+Было:
+#DBPassword=
+
+Стало:
+DBPassword=zabbixDBpass
+```
+**Перезагружаем и энейблим сервисы:**
+
+```
+systemctl restart zabbix-server zabbix-agent2 
+systemctl enable zabbix-server zabbix-agent2
+
+systemctl restart apache2
+systemctl enable apache2
+```
 
 ![image](https://github.com/user-attachments/assets/9cb5c643-0cbc-46f1-92fa-5cacde9f8cc3)
 
