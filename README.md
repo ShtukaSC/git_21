@@ -1,17 +1,17 @@
-**Топология проекта**
+#Топология проекта
 
-Bastion (Jump) host. Имеет публичный адрес, но доступ из-вне ограничен только 22 портом (SSH). На нем установлен Terraform и Ansible
-2 ВМ с Nginx
-Они находятся в приватной сети и не имеют публичного адреса
-Доступ к ним из-вне по HTTTP(S) осуществляется через Yandex Load Balancer
-На них установлен Zabbix agent и FileBeat для мониторинга и сбора логов (access и error nginx)
-ВМ Zabbix-сервер. Имеет публичный адрес. Доступ к ним из-вне по HTTTP(S). Дашборды для CPU, RAM, HDD, NET, HTTP:
-Utilization
-Satiration
-Errors
-ВМ Elasticsearch. Не имеет публичного адреса, собирает логи с ВМ с Nginx
-ВМ Kibana. Имеет публичный адрес, соединен с ВМ Elasticsearch. Доступ к ним из-вне по HTTTP(S)
-Бекапы - снепшоты всех ВМ с TTL 1 неделя
+- Bastion (Jump) host. Имеет публичный адрес, но доступ из-вне ограничен только 22 портом (SSH). На нем установлен Terraform и Ansible
+- 2 ВМ с Nginx
+  + Они находятся в приватной сети и не имеют публичного адреса
+  + Доступ к ним из-вне по HTTTP(S) осуществляется через Yandex Load Balancer
+  + На них установлен Zabbix agent и FileBeat для мониторинга и сбора логов (access и error nginx)
+- ВМ Zabbix-сервер. Имеет публичный адрес. Доступ к ним из-вне по HTTTP(S). Дашборды для CPU, RAM, HDD, NET, HTTP:
+  + Utilization
+  + Satiration
+  + Errors
+- ВМ Elasticsearch. Не имеет публичного адреса, собирает логи с ВМ с Nginx
+- ВМ Kibana. Имеет публичный адрес, соединен с ВМ Elasticsearch. Доступ к ним из-вне по HTTTP(S)
+- Бекапы - снепшоты всех ВМ с TTL 1 неделя
 План:
 ![image](https://github.com/user-attachments/assets/11641673-9d71-4ca9-8e2f-b81bdf6275c7)
 
