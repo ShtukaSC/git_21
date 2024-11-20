@@ -47,16 +47,16 @@
 
 # Устанавливаем Ansible, создаём каталог для сохранения файлов фнсибла и файлики:
 
-...
+'''
 mkdir ~/ansible && cd ~/ansible && touch inventory.yaml && touch playbook.yaml && touch ansible.cfg
-...
+'''
 
 **Создаём роли**
 
 **Создаём задачи по установке пакетов**
 
 **Создаем переменную со списком пакетов: nano default_packages/vars/main.yml**
-
+'''
 packages_to_install:
   - dnsutils
   - net-tools
@@ -69,7 +69,7 @@ packages_to_install:
   - software-properties-common
   - ca-certificates
   - parted
-
+'''
 **Создадим задачи по установке и настройке Nginx**
 
 **Запускаем ансибл**
@@ -79,7 +79,7 @@ packages_to_install:
 # Настраиваем сети с помощью Terraform
 
 **Изменяем main.tf**
-...
+'''
 #Новый ресурс. Создаем новый шлюз для закрытой сети
 resource "yandex_vpc_gateway" "private_net" {
   name = "private_net_nat"
@@ -115,16 +115,16 @@ resource "yandex_vpc_subnet" "subnet" {
   v4_cidr_blocks = each.value["v4_cidr_blocks"]
   route_table_id = yandex_vpc_route_table.route_with_nat.id ##Добавляем ее. Связываем подсеть и маршрутизацию, которую мы создали выше
 }
-...
+'''
 # Бастион уже умеет ходить в 30 подсеть, так как имеет интерфейс из этой подсети. Чтобы он мог ходить и на 20, выполняем:
-...
+'''
 ip route add 192.168.20.0/24 via 192.168.30.1
-...
+'''
 
 # Snapshots
 
 **Добавляем в main.tf**
-...
+'''
 resource "yandex_compute_snapshot" "disk-snap" {
   for_each = var.virtual_machines
   name     = each.value["disk_name"]
@@ -144,7 +144,7 @@ resource "yandex_compute_snapshot_schedule" "one_week_ttl_every_day" {
 
   disk_ids = ["${yandex_compute_disk.boot-disk[each.key].id}"] #Расписание применяется к ранее созданным дискам
 }
-...
+'''
 # Ansible
 
 Создадим новую роль:
@@ -152,7 +152,7 @@ resource "yandex_compute_snapshot_schedule" "one_week_ttl_every_day" {
 ansible-galaxy init install_agents
 
 install_agents/tasks/main.yml:
-...
+'''
 # tasks file for install_agents
 - name: Installing zabbix_agent2
   block:
@@ -183,7 +183,7 @@ install_agents/tasks/main.yml:
     name: zabbix-agent2
     state: restarted
     enabled: yes
-...
+'''
 install_agents/templates/zabbix_agent2.j2
 
 install_agents/vars/main.yml
